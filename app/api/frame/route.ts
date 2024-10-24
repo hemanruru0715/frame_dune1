@@ -53,15 +53,27 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const queryId = '4196350';
     const url = `https://api.dune.com/api/v1/query/${queryId}/results?${queryParams.toString()}`;
     
-    fetch(url, options)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json() as Promise<any>;  // JSON 응답을 반환하는 것으로 타입 지정
-      })
-      .then((data) => console.log("duneData=" + JSON.stringify(data)))
-      .catch((err) => console.error(err));
+    //let duneData: any; // 데이터를 저장할 변수 선언
+
+    // fetch(url, options)
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error(`HTTP error! Status: ${response.status}`);
+    //     }
+    //     return response.json() as Promise<any>;  // JSON 응답을 반환하는 것으로 타입 지정
+    //   })
+    //   .then((data) => {
+    //     duneData = data; // 데이터를 변수에 저장
+    //   })
+    //   .catch((err) => console.error(err));
+
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const duneData = await response.json();  // JSON 응답을 duneData 변수에 할당
+    console.log("duneData=" + JSON.stringify(duneData));
+    
 
 
     //파캐스터 유저정보
