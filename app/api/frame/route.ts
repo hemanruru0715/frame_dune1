@@ -50,7 +50,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
        sort_by: "total_tip_amount desc"
       });  
 
-    const queryId = '4196350';  // query_id를 실제 값으로 설정
+    const queryId = '4196350';
     const url = `https://api.dune.com/api/v1/query/${queryId}/results?${queryParams.toString()}`;
     
     fetch(url, options)
