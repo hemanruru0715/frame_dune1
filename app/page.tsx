@@ -10,7 +10,7 @@ const frameMetadata = getFrameMetadata({
     {
       action: 'link', 
       label: '🔄Share', 
-      target: 'https://warpcast.com/~/compose?text=Check your Moxie Stats. Frame created by @hemanruru&embeds[]=https://hemanruru-barchart.vercel.app' 
+      target: 'https://warpcast.com/~/compose?text=Check your Moxie Stats. Frame created by @hemanruru&embeds[]=https://hemanruru-tiplimit.vercel.app' 
     },
     {
       action: 'link', 
@@ -28,11 +28,11 @@ const frameMetadata = getFrameMetadata({
 
 
 export const metadata: Metadata = {
-  title: 'hemanruru-barchart.vercel.app',
+  title: 'hemanruru-tiplimit.vercel.app',
   description: 'LFG',
-  metadataBase: new URL('https://hemanruru-barchart.vercel.app'),  // 기본 URL 설정
+  metadataBase: new URL('https://hemanruru-tiplimit.vercel.app'),  // 기본 URL 설정
   openGraph: {
-    title: 'hemanruru-barchart.vercel.app',
+    title: 'hemanruru-tiplimit.vercel.app',
     description: 'Check the MOXIE stats',
      images: [`${NEXT_PUBLIC_URL}/thanksgiving_day.png`],
   },
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <h1>hemanruru-barchart.vercel.app</h1>
+      <h1>hemanruru-tiplimit.vercel.app</h1>
     </>
   );
 }
