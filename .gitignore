@@ -1,0 +1,8 @@
+node_modules
+.DS_STORE
+.next/
+yarn.lock
+.env
+public/*.sql
+public/*.sql.bak
+
