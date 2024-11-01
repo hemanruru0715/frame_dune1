@@ -6,7 +6,6 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
 //개발db, 운영db 분리하기
 const supabaseDb = process.env.NODE_ENV == 'development' ? 'user_stats_3_dev' : 'user_stats_3';
-const userInfoPerDate = process.env.NODE_ENV == 'development' ? 'user_info_per_date_dev' : 'user_info_per_date';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 
@@ -69,118 +68,6 @@ export const updateInsertUserData = async (userData: any) => {
 };
 
 
-// fid에 해당하는 최근 7일 데이터 가져오기 함수(랭킹, 이용가능한클레임의 차트만들기용)
-export const fetchUserDataRecentSevenDaysForChart = async (fid: number) => {
-  const UTCDate = getUTCYYYYMMDD(new Date());
-
-  // 7일 전 날짜 (UTC)
-  const sevenDaysAgoUTCDate = getUTCYYYYMMDD(new Date(new Date().getTime() - 6 * 24 * 60 * 60 * 1000)); // 6일을 빼서 7일 전 날짜로 만듦
-  
-  const { data, error } = await supabase
-    .from(userInfoPerDate)
-    .select('*')
-    .gte('record_date_utc', sevenDaysAgoUTCDate) // 7일 전 날짜부터
-    .lte('record_date_utc', UTCDate) // 오늘 날짜까지
-    .eq('fid', fid);
-
-
-  if (error) {
-    if (error.code !== 'PGRST116') { // row가 없는 경우 에러를 제외
-      console.error("Supabase 데이터 검색 오류:", error);
-      throw new Error('Error fetching data from Supabase');
-    }
-    return null;
-  }
-
-  return data;
-};
-
-// fid에 해당하는 데이터 가져오기 함수(랭킹, 이용가능한클레임의 차트만들기용)
-export const fetchUserDataForChart = async (fid: number) => {
-  const UTCDate = getUTCYYYYMMDD(new Date());
-
-  const { data, error } = await supabase
-    .from(userInfoPerDate)
-    .select('*')
-    .eq('record_date_utc', UTCDate)
-    .eq('fid', fid);
-
-  if (error) {
-    if (error.code !== 'PGRST116') { // row가 없는 경우 에러를 제외
-      console.error("Supabase 데이터 검색 오류:", error);
-      throw new Error('Error fetching data from Supabase');
-    }
-    return null;
-  }
-
-  return data;
-};
-
-// 데이터를 업데이트 또는 삽입하는 함수(랭킹, 이용가능한클레임의 차트만들기용)
-export const updateInsertUserDataForChart = async (userDataForChart: any) => {
-  const { fid } = userDataForChart;
-  const { profile_name } = userDataForChart;
-  const { far_rank } = userDataForChart;
-  let { available_claim_amount } = userDataForChart;
-  let new_available_claim_amount = available_claim_amount;
-
-  console.warn("updateInsertUserDataForChart=" + JSON.stringify(userDataForChart));
-
-  // 기존 데이터가 있는지 확인
-  const existingEntry = await fetchUserDataForChart(fid);
-
-  console.log("#########existingEntry=" + JSON.stringify(existingEntry));
-
-  const UTCDate = getUTCYYYYMMDD(new Date());
-
-  //availableClaimAmount 값이 0이면 업데이트시 db에 있는 기존값으로 업데이트
-  //available_claim_amount = '0'; //테스트용 db에 값이 21000이 있지만 후에 클레임 후 api에서 받은값이 0일때 
-  console.log("typeof available_claim_amount=" + typeof available_claim_amount);
-  console.log("available_claim_amount=" + available_claim_amount);
-  if (existingEntry != null && existingEntry.length > 0) {
-    new_available_claim_amount = available_claim_amount === '0.00'
-      ? existingEntry[0].available_claim_amount // new_available_claim_amount가 0이면 기존 값을 유지
-      : available_claim_amount; // 아니면 새로운 값으로 업데이트
-
-    console.log("new_available_claim_amount=" + new_available_claim_amount);
-
-    // 업데이트
-    const { error: updateError } = await supabase
-      .from(userInfoPerDate)
-      .update({
-        record_date_utc: UTCDate,
-        fid: fid,
-        profile_name: profile_name,
-        far_rank: far_rank,
-        available_claim_amount: new_available_claim_amount,
-        mod_dtm: getKoreanISOString()
-      })
-      .eq('record_date_utc', UTCDate)
-      .eq('fid', fid);
-
-    if (updateError) {
-      console.error("Supabase 데이터 업데이트 오류:", updateError);
-      throw new Error('Error updating data in Supabase');
-    }
-   } else {
-    // 삽입
-    const { error: insertError } = await supabase
-      .from(userInfoPerDate)
-      .insert([{
-        record_date_utc: UTCDate,
-        fid: fid,
-        profile_name: profile_name,
-        far_rank: far_rank,
-        available_claim_amount: available_claim_amount,
-        reg_dtm: getKoreanISOString()
-      }]);
-
-    if (insertError) {
-      console.error("Supabase 데이터 삽입 오류:", insertError);
-      throw new Error('Error inserting data into Supabase');
-    }
-  }
-};
 
 function getKoreanISOString() {
     const now = new Date();

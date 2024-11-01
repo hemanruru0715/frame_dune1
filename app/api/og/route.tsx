@@ -3,7 +3,6 @@ import { NEXT_PUBLIC_URL } from '@/app/config';
 import fs from 'fs';
 import path from 'path';
 import { fetchCoinData } from '@/app/utils/fetchCoinData'; // utils 폴더에서 함수 가져오기
-import { generateChart } from '@/app/utils/generateChart';
 
 //export const runtime = "edge";
 export const dynamic = "force-dynamic";
@@ -22,151 +21,57 @@ export async function GET(req: Request) {
   const fid = searchParams.get('fid');
   const profileImage = searchParams.get('profileImage') || `${NEXT_PUBLIC_URL}/default-image.png`;
 
-  const farScore = searchParams.get('farScore') ?? "";
-  //const farBoost = searchParams.get('farBoost') ?? "";
-  const farRank = searchParams.get('farRank') ?? "";
-  const finalFarScore = parseFloat(farScore).toFixed(2).toLocaleString();
-  //const finalFarBoost = parseFloat(farBoost).toLocaleString();
-  const finalFarRank = parseFloat(farRank).toLocaleString();
+  // duneData 파라미터 파싱
+  const duneDataString = searchParams.get('duneDataString');
+  const duneData = duneDataString ? JSON.parse(decodeURIComponent(duneDataString)) : [];
+  console.warn("duneData=" + JSON.stringify(duneData));
 
-  const tvl = searchParams.get('tvl') ?? "";
-  const availableClaimAmount = searchParams.get('availableClaimAmount') ?? "";
+  // degenData 파라미터 파싱
+  const userRank = searchParams.get('userRank');
+  const tipAllowance = parseFloat(searchParams.get('tipAllowance') ?? "").toLocaleString();
+  const remainingTipAllowance = parseFloat(searchParams.get('remainingTipAllowance') ?? "").toLocaleString();
 
-  const stakedTvl = searchParams.get('stakedTvl') ?? "";
-  const unStakedTvl = searchParams.get('unStakedTvl') ?? "";
-
-  const todayAmount = searchParams.get('todayAmount') ?? "";
-  const finalTodayAmount = parseFloat(todayAmount).toLocaleString();
-
-  const replyCount = searchParams.get('replyCount') ?? "";
-  const likeCount = searchParams.get('likeCount') ?? "";
-  const recastCount = searchParams.get('recastCount') ?? "";
-  const quoteCount = searchParams.get('quoteCount') ?? "";
-
-  // console.warn("profileName=" + profileName);
-  // console.warn("fid=" + fid);
-
-
-  let like  = 0;
-  let reply = 0;
-  let rcQt  = 0;
-  let finalLike = 'N/A';
-  let finalReply = 'N/A';
-  let finalRcQt = 'N/A';
-
-  let likeUsd  = 0;
-  let replyUsd = 0;
-  let rcQtUsd  = 0;
-
-  let replykee  = 0;
-  let finalReplykee  = 'N/A';
-
-  let likeKrw  = 0;
-  let replyKrw = 0;
-  let rcQtKrw  = 0;
-
-  let tvlUsd = 0;
-  let availableClaimAmountUsd = 0;
   
-  let tvlKrw = 0;
-  let availableClaimAmountKrw = 0;
-  
-  let finalStakedTvl = 'N/A'
-  let finalUnStakedTvl = 'N/A'
 
-  let stakedTvlUsd = 0;
-  let unStakedTvlUsd = 0;
-
-  let stakedTvlKrw = 0;
-  let unStakedTvlKrw = 0;
-
-
-  let todayAmountUsd    = 0;
-
-  let todayAmountKrw    = 0;
-
-  let finalReplyCount = 0;
-  let finalLikeCount = 0;
-  let finalRcQtCount = 0;
-
-  let moxieUsdPrice = 'N/A';
-  let moxieKrwPrice = 'N/A';
+  let degenUsdPrice = 'N/A';
+  let degenKrwPrice = 'N/A';
 
   try {
-    const { moxieUsdPrice: usdPrice, moxieKrwPrice: krwPrice } = await fetchCoinData();
-    moxieUsdPrice = parseFloat(usdPrice).toLocaleString('en-US', { minimumFractionDigits: 5 });
-    moxieKrwPrice = parseFloat(krwPrice).toLocaleString('ko-KR');
+    const { degenUsdPrice: usdPrice, degenKrwPrice: krwPrice } = await fetchCoinData();
+    degenUsdPrice = parseFloat(usdPrice).toLocaleString('en-US', { minimumFractionDigits: 5 });
+    degenKrwPrice = parseFloat(krwPrice).toLocaleString('ko-KR');
 
-    console.warn("moxieUsdPrice=" + moxieUsdPrice);
-    console.warn("moxieKrwPrice=" + moxieKrwPrice);
-
-    //화면 구성값 계산
-    like  = parseFloat((parseFloat(farScore) * 0.5).toFixed(2));
-    reply = parseFloat((parseFloat(farScore) * 1).toFixed(2));
-    rcQt  = parseFloat((parseFloat(farScore) * 2).toFixed(2));
-    finalLike  = like.toLocaleString();
-    finalReply = reply.toLocaleString();
-    finalRcQt  = rcQt.toLocaleString();
-
-     replykee = like + reply + rcQt;
-     finalReplykee = replykee.toLocaleString();
-
-     console.warn("finalLike=" + finalLike);
-     console.warn("finalReply=" + finalReply);
-     console.warn("finalRcQt=" + finalRcQt);
-
-    /* like,reply,rcqt 관련 USD */
-    likeUsd  = parseFloat((like * parseFloat(moxieUsdPrice)).toFixed(4)); //finalLikeUsd 시 0이 나와서 임시 likeUsd로 화면에 보여줌
-    replyUsd = parseFloat((reply * parseFloat(moxieUsdPrice)).toFixed(4));
-    rcQtUsd  = parseFloat((rcQt * parseFloat(moxieUsdPrice)).toFixed(4));
-
-    /* like,reply,rcqt 관련 KRW */
-    likeKrw  = parseFloat((like * parseFloat(moxieKrwPrice)).toFixed(0));
-    replyKrw = parseFloat((reply * parseFloat(moxieKrwPrice)).toFixed(0));
-    rcQtKrw  = parseFloat((rcQt * parseFloat(moxieKrwPrice)).toFixed(0));
-
-    /* tvl 관련 USD */
-    tvlUsd    = parseFloat((parseFloat(tvl) * parseFloat(moxieUsdPrice)).toFixed(2));
-    availableClaimAmountUsd    = parseFloat((parseFloat(availableClaimAmount) * parseFloat(moxieUsdPrice)).toFixed(2));
-
-    /* tvl 관련 KRW */
-    tvlKrw    = parseFloat((parseFloat(tvl) * parseFloat(moxieKrwPrice)).toFixed(0));
-    availableClaimAmountKrw    = parseFloat((parseFloat(availableClaimAmount) * parseFloat(moxieKrwPrice)).toFixed(0));
-
-
-    /* stakedTvl, unStakedTvl 관련 USD */
-    stakedTvlUsd    = parseFloat((parseFloat(stakedTvl) * parseFloat(moxieUsdPrice)).toFixed(2));
-    unStakedTvlUsd    = parseFloat((parseFloat(unStakedTvl) * parseFloat(moxieUsdPrice)).toFixed(2));
-
-    /* stakedTvl, unStakedTvl 관련 KRW */
-    stakedTvlKrw    = parseFloat((parseFloat(stakedTvl) * parseFloat(moxieKrwPrice)).toFixed(0));
-    unStakedTvlKrw    = parseFloat((parseFloat(unStakedTvl) * parseFloat(moxieKrwPrice)).toFixed(0));
-    
-    finalStakedTvl = Number((Number(stakedTvl) / 1e3).toFixed(1)).toLocaleString();
-    finalUnStakedTvl = Number((Number(unStakedTvl) / 1e3).toFixed(1)).toLocaleString();
-
-    /* today,weekly,lifeTime 관련 USD */
-    todayAmountUsd    = parseFloat((parseFloat(todayAmount) * parseFloat(moxieUsdPrice)).toFixed(2).toLocaleString());
-    
-    /* today,weekly,lifeTime 관련 KRW */
-    todayAmountKrw    = parseFloat((parseFloat(todayAmount) * parseFloat(moxieKrwPrice)).toFixed(0).toLocaleString());
-
-    /* 댓글, 좋아요, 리캐 및 인용 개수 */
-    finalReplyCount = parseFloat(replyCount);
-    finalLikeCount = parseFloat(likeCount);
-    finalRcQtCount = parseFloat(recastCount) + parseFloat(quoteCount);
+    console.warn("degenUsdPrice=" + degenUsdPrice);
+    console.warn("degenKrwPrice=" + degenKrwPrice);
 
   } catch (error) {
-    console.error('Error fetching MOXIE price:', error);
+    console.error('Error fetching DEGEN price:', error);
   }
 
 
-   // 차트 이미지 생성
-   const chartImageBuffer = await generateChart(fid);
+   /* dune 쿼리 반복문 html 처리 */
+   const rowsContent = duneData.map((row: any, index: any) => (
 
-   // Buffer를 Base64 문자열로 변환
-   const base64Image = chartImageBuffer.toString('base64');
-   const imageSrc = `data:image/png;base64,${base64Image}`;
+    <div key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px' }}>
+      <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+        <strong>{row.username1}</strong>
+      </div>
+      <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+        <strong>{row.username2}</strong>
+      </div>
+      <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+        <strong>{row.tips_from_user1_to_user2 >= 15 ? <span style={{color: 'blue'}}>{row.tips_from_user1_to_user2}</span> : row.tips_from_user1_to_user2}</strong>
+      </div>
+      <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+        <strong>{row.tips_from_user2_to_user1 >= 15 ? <span style={{color: 'blue'}}>{row.tips_from_user2_to_user1}</span> : row.tips_from_user2_to_user1}</strong>
+      </div>
+      <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+        <strong>{row.total_tip_amount}</strong>
+      </div>
+    </div>
+  ));
+   
+
 
   if (searchParams != null) {
     return new ImageResponse(
@@ -198,7 +103,7 @@ export async function GET(req: Request) {
               height="150"
               width="150"
               style={{
-                borderRadius: '35%',
+                borderRadius: '50%',
                 objectFit: 'cover',
                 marginRight: '20px',
               }}
@@ -220,7 +125,7 @@ export async function GET(req: Request) {
             />
           </div>
 
-          <div style={{ position: 'absolute', top: '0px', right: '200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* <div style={{ position: 'absolute', top: '0px', right: '200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <img
               src={`${NEXT_PUBLIC_URL}/Moxie_Maxi_HandsUp.png`}
               height="230"
@@ -229,14 +134,14 @@ export async function GET(req: Request) {
                 objectFit: 'contain',
               }}
             />
-          </div>
+          </div> */}
 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <strong></strong>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-end', fontSize: '30px' }}>
-              <strong style={{ marginLeft: '150px', fontSize: '25px' }}>Moxie Price</strong>
-              <strong style={{ marginLeft: '150px' }}>{moxieUsdPrice} USD</strong>
-              <strong style={{ marginLeft: '150px' }}>{moxieKrwPrice} KRW</strong>
+              <strong style={{ marginLeft: '150px', fontSize: '25px' }}>Degen Price</strong>
+              <strong style={{ marginLeft: '150px' }}>{degenUsdPrice} USD</strong>
+              <strong style={{ marginLeft: '150px' }}>{degenKrwPrice} KRW</strong>
             </div>
           </div>
 
@@ -244,93 +149,45 @@ export async function GET(req: Request) {
 
 
         {/* 행 단위로 구성된 섹션들 */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '25px' }}>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>FarRank</strong>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px'}}>
+        <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+            <strong>UserRank</strong>
           </div>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>FarScore</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>Locked</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>Today</strong>
+            <strong>Tip Allowance</strong>
           </div>
        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '40px' }}>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>{finalFarRank}</strong>
+       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', marginBottom: '40px' }}>
+        <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+            <strong>{userRank}</strong>
           </div>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>{finalFarScore}</strong>
+            <strong>({remainingTipAllowance}/{tipAllowance})</strong>
           </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>{finalStakedTvl}K</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>{finalTodayAmount}</strong>
-          </div>
-        </div>
+       </div>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '25px' }}>
+        {/* 행 단위로 구성된 섹션들 */}
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px' }}>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>Like</strong>
+            <strong>Sender</strong>
+          </div>                              
+          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+            <strong>Receiver</strong>
           </div>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>Reply</strong>
+            <strong>Send</strong>
           </div>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>Recast/Quote</strong>
+            <strong>Receive</strong>
           </div>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>Replyke</strong>
+            <strong>Amount</strong>
           </div>
-        </div>
+       </div>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '40px' }}>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>{finalLike}</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>{finalReply}</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>{finalRcQt}</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>{finalReplykee}</strong>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: '#DC143C' }}>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>({finalLikeCount}/500)</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>({finalReplyCount}/200)</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong>({finalRcQtCount}/100)</strong>
-          </div>
-          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-            <strong></strong>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '50px', marginBottom: '10px' }}>
-          <div style={{ display: 'flex', textAlign: 'left' }}>
-            <strong></strong>
-          </div>
-          <div style={{ display: 'flex', textAlign: 'right' }}>
-            <strong></strong>
-          </div>
-        </div>
-
-
-      {/* img 태그로 Base64 인코딩된 차트 이미지 렌더링 */}
-      <img src={imageSrc} alt="Chart" style={{ width: '100%', height: '100%' }} />
+        {/* duneData Rows Content */}
+        {rowsContent}
 
         <div
           style={{
