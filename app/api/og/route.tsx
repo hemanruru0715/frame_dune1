@@ -50,7 +50,7 @@ export async function GET(req: Request) {
    /* dune 쿼리 반복문 html 처리 */
    const rowsContent = duneData.map((row: any, index: any) => (
 
-    <div key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: '#000000' }}>
+    <div key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: '#000000' }}>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
         <strong>{row.username1}</strong>
       </div>
@@ -158,7 +158,7 @@ export async function GET(req: Request) {
 
 
         {/* 행 단위로 구성된 섹션들 */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: 'blue'}}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: 'blue'}}>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>UserRank</strong>
           </div>
@@ -166,7 +166,7 @@ export async function GET(req: Request) {
             <strong>Tip Allowance</strong>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: '#000000', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: '#000000', marginBottom: '20px' }}>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>{userRank}</strong>
           </div>
@@ -176,7 +176,7 @@ export async function GET(req: Request) {
         </div>
 
         {/* 행 단위로 구성된 섹션들 */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: 'blue' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: 'blue' }}>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>Sender</strong>
           </div>                              
