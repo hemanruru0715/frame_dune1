@@ -24,18 +24,16 @@ export async function GET(req: Request) {
   // duneData 파라미터 파싱
   const duneDataString = searchParams.get('duneDataString');
   const duneData = duneDataString ? JSON.parse(decodeURIComponent(duneDataString)) : [];
-  console.warn("duneData=" + JSON.stringify(duneData));
+  //console.warn("duneData=" + JSON.stringify(duneData));
 
   // degenData 파라미터 파싱
   const userRank = searchParams.get('userRank');
   const tipAllowance = parseFloat(searchParams.get('tipAllowance') ?? "").toLocaleString();
   const remainingTipAllowance = parseFloat(searchParams.get('remainingTipAllowance') ?? "").toLocaleString();
 
-  
-
+  //Degen 가격 실시간 데이터 가져오기
   let degenUsdPrice = 'N/A';
   let degenKrwPrice = 'N/A';
-
   try {
     const { degenUsdPrice: usdPrice, degenKrwPrice: krwPrice } = await fetchCoinData();
     degenUsdPrice = parseFloat(usdPrice).toLocaleString('en-US', { minimumFractionDigits: 5 });
@@ -52,7 +50,7 @@ export async function GET(req: Request) {
    /* dune 쿼리 반복문 html 처리 */
    const rowsContent = duneData.map((row: any, index: any) => (
 
-    <div key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px' }}>
+    <div key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: '#000000' }}>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
         <strong>{row.username1}</strong>
       </div>
@@ -60,13 +58,13 @@ export async function GET(req: Request) {
         <strong>{row.username2}</strong>
       </div>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-        <strong>{row.tips_from_user1_to_user2 >= 15 ? <span style={{color: 'blue'}}>{row.tips_from_user1_to_user2}</span> : row.tips_from_user1_to_user2}</strong>
+        <strong>{row.tips_from_user1_to_user2 >= 15 ? <span style={{color: 'red'}}>{row.tips_from_user1_to_user2}</span> : row.tips_from_user1_to_user2}</strong>
       </div>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-        <strong>{row.tips_from_user2_to_user1 >= 15 ? <span style={{color: 'blue'}}>{row.tips_from_user2_to_user1}</span> : row.tips_from_user2_to_user1}</strong>
+        <strong>{row.tips_from_user2_to_user1 >= 15 ? <span style={{color: 'red'}}>{row.tips_from_user2_to_user1}</span> : row.tips_from_user2_to_user1}</strong>
       </div>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-        <strong>{row.total_tip_amount}</strong>
+        <strong>{parseFloat(row.total_tip_amount).toLocaleString()}</strong>
       </div>
     </div>
   ));
@@ -87,11 +85,11 @@ export async function GET(req: Request) {
           //fontFamily: '"Arial", sans-serif',
           fontFamily: '"Poppins-Regular"', // 폰트 이름
           //backgroundColor: '#7158e2',
-          color: '#DC143C',
+          color: '#522d9d', //진한보라색
           padding: '40px',
           boxSizing: 'border-box',
           //backgroundImage: 'linear-gradient(145deg, #6d5dfc 10%, #b2a3f6 90%)',
-          backgroundImage: `url(${NEXT_PUBLIC_URL}/autumn_color2.png)`,
+          backgroundImage: `url(${NEXT_PUBLIC_URL}/degen_exchange.png)`,
         }}
       >
 
@@ -114,11 +112,22 @@ export async function GET(req: Request) {
             </div>
           </div>
 
-          <div style={{ position: 'absolute', top: '0px', right: '470px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ position: 'absolute', top: '16px', right: '200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <img
-              src={`${NEXT_PUBLIC_URL}/Moxie_Maxi_Scared.png`}
-              height="200"
-              width="200"  // 크기 조정
+              src={`${NEXT_PUBLIC_URL}/Moxie_Maxi_Point.png`}
+              height="180"
+              width="180"  // 크기 조정
+              style={{
+                objectFit: 'contain',
+              }}
+            />
+          </div>
+
+          <div style={{ position: 'absolute', top: '-23px', right: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <img
+              src={`${NEXT_PUBLIC_URL}/degen.png`}
+              height="120"
+              width="120"  // 크기 조정
               style={{
                 objectFit: 'contain',
               }}
@@ -149,26 +158,25 @@ export async function GET(req: Request) {
 
 
         {/* 행 단위로 구성된 섹션들 */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px'}}>
-        <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: 'blue'}}>
+          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>UserRank</strong>
           </div>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>Tip Allowance</strong>
           </div>
-       </div>
-
-       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', marginBottom: '40px' }}>
-        <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: '#000000', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>{userRank}</strong>
           </div>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>({remainingTipAllowance}/{tipAllowance})</strong>
           </div>
-       </div>
+        </div>
 
         {/* 행 단위로 구성된 섹션들 */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: 'blue' }}>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>Sender</strong>
           </div>                              
