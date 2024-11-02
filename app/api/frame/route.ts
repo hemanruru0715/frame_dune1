@@ -24,8 +24,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (!isValid) {
       return new NextResponse('Message not valid', { status: 500 });
     }
-    //let myFid = Number(message?.data?.fid) || 0;
-    let myFid = 500371;
+    let myFid = Number(message?.data?.fid) || 0;
+    //let myFid = 500371;
     const input: FarcasterUserDetailsInput = { fid: myFid };
 
 
