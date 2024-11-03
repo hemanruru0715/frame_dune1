@@ -36,7 +36,7 @@ export async function GET(req: Request) {
   let degenKrwPrice = 'N/A';
   try {
     const { degenUsdPrice: usdPrice, degenKrwPrice: krwPrice } = await fetchCoinData();
-    degenUsdPrice = parseFloat(usdPrice).toLocaleString('en-US', { minimumFractionDigits: 5 });
+    degenUsdPrice = parseFloat(usdPrice).toLocaleString('en-US', { minimumFractionDigits: 4 });
     degenKrwPrice = parseFloat(krwPrice).toLocaleString('ko-KR');
 
     console.warn("degenUsdPrice=" + degenUsdPrice);
@@ -50,7 +50,7 @@ export async function GET(req: Request) {
    /* dune 쿼리 반복문 html 처리 */
    const rowsContent = duneData.map((row: any, index: any) => (
 
-    <div key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: '#000000' }}>
+    <div key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: '#58F9FF' }}>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
         <strong>{row.username1}</strong>
       </div>
@@ -85,11 +85,12 @@ export async function GET(req: Request) {
           //fontFamily: '"Arial", sans-serif',
           fontFamily: '"Poppins-Regular"', // 폰트 이름
           //backgroundColor: '#7158e2',
-          color: '#522d9d', //진한보라색
+          color: '#3CF8FF',
+          //color: '#522d9d', //진한보라색
           padding: '40px',
           boxSizing: 'border-box',
           //backgroundImage: 'linear-gradient(145deg, #6d5dfc 10%, #b2a3f6 90%)',
-          backgroundImage: `url(${NEXT_PUBLIC_URL}/degen_exchange.png)`,
+          backgroundImage: `url(${NEXT_PUBLIC_URL}/handshake_degen.png)`,
         }}
       >
 
@@ -112,7 +113,7 @@ export async function GET(req: Request) {
             </div>
           </div>
 
-          <div style={{ position: 'absolute', top: '16px', right: '200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* <div style={{ position: 'absolute', top: '0px', right: '170px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <img
               src={`${NEXT_PUBLIC_URL}/Moxie_Maxi_Point.png`}
               height="180"
@@ -121,13 +122,13 @@ export async function GET(req: Request) {
                 objectFit: 'contain',
               }}
             />
-          </div>
+          </div> */}
 
-          <div style={{ position: 'absolute', top: '-23px', right: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ position: 'absolute', top: '0px', right: '210px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <img
-              src={`${NEXT_PUBLIC_URL}/degen.png`}
-              height="120"
-              width="120"  // 크기 조정
+              src={`${NEXT_PUBLIC_URL}/degen_logo.png`}
+              height="130"
+              width="130"  // 크기 조정
               style={{
                 objectFit: 'contain',
               }}
@@ -148,7 +149,7 @@ export async function GET(req: Request) {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <strong></strong>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-end', fontSize: '30px' }}>
-              <strong style={{ marginLeft: '150px', fontSize: '25px' }}>Degen Price</strong>
+              <strong style={{ marginLeft: '150px', fontSize: '25px' }}>$Degen</strong>
               <strong style={{ marginLeft: '150px' }}>{degenUsdPrice} USD</strong>
               <strong style={{ marginLeft: '150px' }}>{degenKrwPrice} KRW</strong>
             </div>
@@ -158,7 +159,7 @@ export async function GET(req: Request) {
 
 
         {/* 행 단위로 구성된 섹션들 */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: 'blue'}}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: '#ffffff', marginTop: '30px'}}>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>UserRank</strong>
           </div>
@@ -166,7 +167,7 @@ export async function GET(req: Request) {
             <strong>Tip Allowance</strong>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: '#000000', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '35px', color: '#58F9FF', marginBottom: '30px' }}>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>{userRank}</strong>
           </div>
@@ -176,7 +177,7 @@ export async function GET(req: Request) {
         </div>
 
         {/* 행 단위로 구성된 섹션들 */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: 'blue' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: '#ffffff' }}>
           <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
             <strong>Sender</strong>
           </div>                              
