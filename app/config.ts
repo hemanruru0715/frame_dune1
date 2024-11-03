@@ -2,5 +2,5 @@
 // ngrok 서버 킬때는 http://localhost:3000자리에 ngrok에서 얻은 주소로 바꿔줄것(예: https://99fe-175-115-245-58.ngrok-free.app)
 //그래야 프레임 벨리데이터에서 동작함
 export const NEXT_PUBLIC_URL =
-  process.env.NODE_ENV == 'development' ? 'https://af0a-175-115-245-58.ngrok-free.app' : 'https://hemanruru-tiplimit.vercel.app';
+  process.env.NODE_ENV == 'development' ? 'https://cfc8-175-115-245-58.ngrok-free.app' : 'https://hemanruru-tiplimit.vercel.app';
 
