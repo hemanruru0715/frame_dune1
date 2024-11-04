@@ -40,8 +40,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const queryParams = new URLSearchParams({
        limit: '18', 
        offset: '0',
-       filters: "user1 = '" + myFid + "' OR user2 = '" + myFid + "'",
-       sort_by: "tips_from_user1_to_user2 desc, tips_from_user2_to_user1 desc, total_tip_amount desc"
+       filters: "user1 = '" + myFid + "' OR user2 = '" + myFid + "'"
+       //sort_by: "(tips_from_user1_to_user2 + tips_from_user2_to_user1) desc, total_tip_amount desc"
       });  
 
     const queryId = '4196350';
