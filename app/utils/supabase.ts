@@ -14,7 +14,8 @@ export const fetchUserData = async (fid: number) => {
     const { data, error } = await supabase
       .from(supabaseDb)
       .select('*')
-      .eq('fid', fid);
+      .eq('fid', fid)
+      .order('total_tip_count', { ascending: false });
   
     if (error) {
       if (error.code !== 'PGRST116') { // row가 없는 경우 에러를 제외

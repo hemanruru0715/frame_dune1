@@ -40,8 +40,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const queryParams = new URLSearchParams({
        limit: '18', 
        offset: '0',
-       filters: "user1 = '" + myFid + "' OR user2 = '" + myFid + "'"
-       //sort_by: "(tips_from_user1_to_user2 + tips_from_user2_to_user1) desc, total_tip_amount desc"
+       filters: "user1 = '" + myFid + "' OR user2 = '" + myFid + "'",
+       sort_by: "total_tip_count desc, total_tip_amount desc"
       });  
 
     const queryId = '4196350';
@@ -222,6 +222,7 @@ export async function GET(req: NextRequest) {
     remaining_tip_allowance: number;
     profile_name: string;
     profile_image: string;
+    total_tip_count: number;
   }
 
   /**************** DB 작업 ****************/
