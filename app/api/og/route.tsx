@@ -52,10 +52,10 @@ export async function GET(req: Request) {
 
     <div key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', fontSize: '30px', color: '#58F9FF' }}>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-        <strong>{row.username1}</strong>
+        <strong>{row.username1.length > 10 ? `${row.username1.substring(0, 10)}..` : row.username1}</strong>
       </div>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-        <strong>{row.username2}</strong>
+        <strong>{row.username2.length > 10 ? `${row.username2.substring(0, 10)}..` : row.username2}</strong>
       </div>
       <div style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
         <strong>{row.tips_from_user1_to_user2 >= 15 ? <span style={{color: 'red'}}>{row.tips_from_user1_to_user2}</span> : row.tips_from_user1_to_user2}</strong>
