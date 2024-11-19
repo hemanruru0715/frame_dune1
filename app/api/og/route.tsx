@@ -21,6 +21,8 @@ export async function GET(req: Request) {
   const fid = searchParams.get('fid');
   const profileImage = searchParams.get('profileImage') || `${NEXT_PUBLIC_URL}/default-image.png`;
 
+  console.warn("profileImage=" + profileImage);
+  
   // duneData 파라미터 파싱
   const duneDataString = searchParams.get('duneDataString');
   const duneData = duneDataString ? JSON.parse(decodeURIComponent(duneDataString)) : [];

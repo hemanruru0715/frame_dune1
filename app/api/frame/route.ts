@@ -201,6 +201,8 @@ export async function POST(req: NextRequest): Promise<Response> {
 
 
 export async function GET(req: NextRequest) {
+
+  console.warn("11111111111111111");
   // Next.js의 NextRequest 객체에서 URL과 쿼리 매개변수를 직접 가져옵니다.
   const url = req.nextUrl; // NextRequest의 nextUrl 속성 사용
   const fid = Number(url.searchParams.get('fid')); // 'fid' 매개변수 추출
@@ -231,7 +233,7 @@ export async function GET(req: NextRequest) {
     return new NextResponse('No data found', { status: 404 });
   }
   const duneDataString: duneDataItem[] = data;
-  //console.log("api/frame/route.ts_data=" + JSON.stringify(data));
+  console.log("fetchUserData=" + JSON.stringify(data));
   /**************** DB 작업 끝 ****************/
 
   // frameData 배열을 JSON 문자열로 변환하고 URL 인코딩
@@ -259,9 +261,8 @@ export async function GET(req: NextRequest) {
       ],
       image: { 
         src: `${NEXT_PUBLIC_URL}/api/og?profileName=${duneDataString[0].profile_name}&fid=${duneDataString[0].fid}&profileImage=${profileImage}
-                                       &duneDataString=${encodedDuneDataString}
                                        &userRank=${duneDataString[0].user_rank}&tipAllowance=${duneDataString[0].tip_allowance}&remainingTipAllowance=${duneDataString[0].remaining_tip_allowance}
-                                       &cache_burst=${Math.floor(Date.now() / 1000)}`,
+                                       &duneDataString=${encodedDuneDataString}&cache_burst=${Math.floor(Date.now() / 1000)}`,
         aspectRatio: '1:1',
       },
       postUrl: `${NEXT_PUBLIC_URL}/api/frame?cache_burst=${Math.floor(Date.now() / 1000)}`,
